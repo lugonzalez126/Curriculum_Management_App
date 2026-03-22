@@ -4,6 +4,7 @@ from sqlalchemy import pool
 from alembic import context
 import sys
 import os
+from app.models import refresh_token
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
