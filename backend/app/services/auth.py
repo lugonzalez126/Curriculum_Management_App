@@ -10,6 +10,10 @@ from app.models.refresh_token import RefreshToken
 import uuid
 from app.schemas.user import UserRegister, UserLogin
 from datetime import datetime, timezone, timedelta
+import hashlib
+
+def hash_refresh_token(token: str) -> str:
+    return hashlib.sha256(token.encode()).hexdigest()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def create_access_token(data: dict) -> str:
@@ -29,7 +33,7 @@ def create_refresh_token(db: Session, user_id: uuid.UUID) -> str:
     raw_token = secrets.token_urlsafe(32)
 
     # Hash it before storing
-    token_hash = pwd_context.hash(raw_token)
+    token_hash = hash_refresh_token(raw_token)
 
     # Store in database
     refresh_token = RefreshToken(
@@ -44,6 +48,54 @@ def create_refresh_token(db: Session, user_id: uuid.UUID) -> str:
 
     # Return the raw token to send to client
     return raw_token
+
+def refresh_access_token(db: Session, raw_token: str) -> dict:
+    # 1. Hash the incoming token
+    hashed_token = hash_refresh_token(raw_token)
+
+    # 2. Find it in the database
+    token = db.query(RefreshToken).filter(RefreshToken.token_hash == hashed_token).first()
+
+    # 3. Validate
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token"
+        )
+    if token.revoked:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token has been revoked"
+        )
+    if token.expires_at <= datetime.now(timezone.utc):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token has expired"
+        )
+
+    # 4. Issue new access token
+    access_token = create_access_token({"sub": str(token.user_id)})
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+
+def logout_user(db: Session, raw_token: str) -> dict:
+    hashed_token = hash_refresh_token(raw_token)
+    token = db.query(RefreshToken).filter(RefreshToken.token_hash == hashed_token).first()
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token"
+        )
+
+    token.revoked = True
+    db.commit()
+
+    return {"message": "Successfully logged out"}
+  
 
 def register_user(db: Session, data: UserRegister) -> User:
     # 1. Check email not taken
@@ -106,3 +158,4 @@ def login_user(db: Session, data: UserLogin) -> dict:
         "refresh_token": refresh_token,
         "token_type": "bearer"
     }
+

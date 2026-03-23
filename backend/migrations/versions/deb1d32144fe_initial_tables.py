@@ -1,8 +1,8 @@
-"""create initial tables
+"""initial tables
 
-Revision ID: 0c88b099dd51
+Revision ID: deb1d32144fe
 Revises: 
-Create Date: 2026-03-19 14:31:58.067927
+Create Date: 2026-03-22 17:22:36.187026
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '0c88b099dd51'
+revision: str = 'deb1d32144fe'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -37,13 +37,24 @@ def upgrade() -> None:
     sa.Column('creator_id', sa.UUID(), nullable=False),
     sa.Column('title', sa.String(length=255), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
-    sa.Column('status', sa.String(length=50), nullable=False),
+    sa.Column('is_published', sa.Boolean(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['creator_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_curricula_creator_id'), 'curricula', ['creator_id'], unique=False)
+    op.create_table('refresh_tokens',
+    sa.Column('id', sa.UUID(), nullable=False),
+    sa.Column('user_id', sa.UUID(), nullable=False),
+    sa.Column('token_hash', sa.String(length=255), nullable=False),
+    sa.Column('expires_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('revoked', sa.Boolean(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_refresh_tokens_user_id'), 'refresh_tokens', ['user_id'], unique=False)
     op.create_table('modules',
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('curriculum_id', sa.UUID(), nullable=False),
@@ -79,6 +90,8 @@ def downgrade() -> None:
     op.drop_table('lessons')
     op.drop_index(op.f('ix_modules_curriculum_id'), table_name='modules')
     op.drop_table('modules')
+    op.drop_index(op.f('ix_refresh_tokens_user_id'), table_name='refresh_tokens')
+    op.drop_table('refresh_tokens')
     op.drop_index(op.f('ix_curricula_creator_id'), table_name='curricula')
     op.drop_table('curricula')
     op.drop_table('users')

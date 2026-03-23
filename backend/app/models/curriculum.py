@@ -1,9 +1,10 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import String, DateTime, Float, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
+from sqlalchemy import DateTime, ForeignKey, Text, Boolean, String
+
 
 
 class Curriculum(Base):
@@ -28,10 +29,10 @@ class Curriculum(Base):
         Text,
         nullable=False
     )
-    status: Mapped[str] = mapped_column(
-        String(50),
+    is_published: Mapped[bool] = mapped_column(
+        Boolean,
         nullable=False,
-        default="draft"
+        default=False
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
