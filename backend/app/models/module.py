@@ -43,3 +43,8 @@ class Module(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
+    revoked: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=False
+    )

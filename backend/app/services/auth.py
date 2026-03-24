@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from app.models.user import User
 import secrets
-from datetime import timedelta
 from jose import jwt
 from app.config import settings
 from app.models.refresh_token import RefreshToken
