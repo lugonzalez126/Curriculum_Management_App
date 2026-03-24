@@ -1,4 +1,5 @@
 import uuid
+from app.dependencies import get_optional_user
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from app.models.curriculum import Curriculum
