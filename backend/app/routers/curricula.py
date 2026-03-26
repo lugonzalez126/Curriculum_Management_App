@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_optional_user
 from app.models.user import User
-from app.schemas.curriculum import CurriculumCreate, CurriculumUpdate, CurriculumResponse
+from app.schemas.curriculum import CurriculumCreate, CurriculumUpdate, CurriculumResponse, CurriculumDetail
 from typing import Optional
 from app.services.curriculum import (
     create_curriculum, get_curriculum, update_curriculum,
@@ -18,7 +18,7 @@ def list_curricula(db: Session = Depends(get_db)):
     return list_published_curricula(db=db)
 
 
-@router.get("/{curriculum_id}", response_model=CurriculumResponse)
+@router.get("/{curriculum_id}", response_model=CurriculumDetail)
 def get_one(curriculum_id: uuid.UUID, db: Session = Depends(get_db), current_user: Optional[User] = Depends(get_optional_user)):
     return get_curriculum(db=db, curriculum_id=curriculum_id, current_user=current_user)
 

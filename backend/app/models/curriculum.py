@@ -4,6 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 from sqlalchemy import DateTime, ForeignKey, Text, Boolean, String
+from sqlalchemy.orm import relationship
 
 
 
@@ -43,3 +44,6 @@ class Curriculum(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
+    
+    creator = relationship("User", back_populates="curricula")
+    modules = relationship("Module", back_populates="curriculum", cascade="all, delete-orphan", order_by="Module.order")

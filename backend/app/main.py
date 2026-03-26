@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth
-from app.routers import auth, curricula
+from app.routers import auth, curricula, modules, lessons
 
 
 
@@ -17,6 +16,8 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(curricula.router)
+app.include_router(modules.router)
+app.include_router(lessons.router)
 
 @app.get("/health")
 def health_check():

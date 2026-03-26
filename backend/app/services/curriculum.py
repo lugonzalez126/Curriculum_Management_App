@@ -1,11 +1,12 @@
 import uuid
-from app.dependencies import get_optional_user
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from app.models.curriculum import Curriculum
 from app.models.user import User
 from typing import Optional
 from app.schemas.curriculum import CurriculumCreate, CurriculumUpdate
+from sqlalchemy.orm import joinedload
+from app.models.module import Module
 
 
 def create_curriculum(db: Session, creator_id: uuid.UUID, data: CurriculumCreate) -> Curriculum:
@@ -21,7 +22,12 @@ def create_curriculum(db: Session, creator_id: uuid.UUID, data: CurriculumCreate
 
 
 def get_curriculum(db: Session, curriculum_id: uuid.UUID, current_user: Optional[User]) -> Curriculum:
-    curriculum = db.query(Curriculum).filter(Curriculum.id == curriculum_id).first()
+    curriculum = (
+        db.query(Curriculum)
+        .options(joinedload(Curriculum.modules).joinedload(Module.lessons))
+        .filter(Curriculum.id == curriculum_id)
+        .first()
+    )
 
     if not curriculum:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Curriculum not found")

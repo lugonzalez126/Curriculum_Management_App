@@ -4,6 +4,7 @@ from sqlalchemy import String, DateTime, Float, ForeignKey, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
+from sqlalchemy.orm import relationship
 
 
 class Module(Base):
@@ -43,8 +44,8 @@ class Module(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
-    revoked: Mapped[bool] = mapped_column(
-        Boolean,
-        nullable=False,
-        default=False
-    )
+
+    
+    curriculum = relationship("Curriculum", back_populates="modules")
+    lessons = relationship("Lesson", back_populates="module", cascade="all, delete-orphan", order_by="Lesson.order")
+ 

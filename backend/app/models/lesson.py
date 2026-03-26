@@ -4,6 +4,7 @@ from sqlalchemy import String, DateTime, Float, ForeignKey, Text, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from app.database import Base
+from sqlalchemy.orm import relationship
 
 
 class Lesson(Base):
@@ -46,3 +47,4 @@ class Lesson(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
+    module = relationship("Module", back_populates="lessons")
