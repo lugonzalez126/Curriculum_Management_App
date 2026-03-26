@@ -67,13 +67,13 @@ def delete_curriculum(db: Session, curriculum_id: uuid.UUID, current_user: User)
     return {"message": "Deleted successfully"}
 
 
-def list_published_curricula(db: Session, search: Optional[str] = None) -> list[Curriculum]:
+def list_published_curricula(db: Session, search: Optional[str] = None, skip: int = 0, limit: int = 20) -> list[Curriculum]:
     query = db.query(Curriculum).filter(Curriculum.is_published == True)
     if search:
         query = query.filter(
             func.similarity(Curriculum.title, search) > 0.1
         ).order_by(func.similarity(Curriculum.title, search).desc())
-    return query.all()
+    return query.offset(skip).limit(limit).all()
 
 
 def get_creator_curricula(db: Session, username: str) -> list[Curriculum]:
