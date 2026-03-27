@@ -29,8 +29,11 @@ class UserResponse(BaseModel):
     email: EmailStr
     username: str
     created_at: datetime
-
+    avatar_url: Optional[str] = None
     model_config = {"from_attributes": True}
+    
+class UserUpdate(BaseModel):
+    avatar_url: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr

@@ -44,6 +44,10 @@ class Curriculum(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
+    cover_image_url: Mapped[str] = mapped_column(
+    String(500),
+    nullable=True
+    )
     
     creator = relationship("User", back_populates="curricula")
     modules = relationship("Module", back_populates="curriculum", cascade="all, delete-orphan", order_by="Module.order")

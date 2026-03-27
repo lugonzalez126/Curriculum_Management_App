@@ -47,3 +47,7 @@ def logout(request: Request, db: Session = Depends(get_db)):
     if not raw_token:
         raise HTTPException(status_code=401, detail="Missing refresh token")
     return logout_user(db=db, raw_token=raw_token)
+
+@router.patch("/me", response_model=UserResponse)
+def update_me(data: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return update_user(db=db, current_user=current_user, data=data)
