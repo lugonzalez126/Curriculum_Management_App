@@ -1,7 +1,7 @@
 import uuid
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from app.models.curriculum import Curriculum
 from app.models.user import User
 from app.models.module import Module
@@ -84,12 +84,20 @@ def list_published_curricula(db: Session, search: Optional[str] = None, skip: in
     )
     if search:
         query = query.filter(
-            func.similarity(Curriculum.title, search) > 0.1
-        ).order_by(func.similarity(Curriculum.title, search).desc())
-    
+            or_(
+                func.similarity(Curriculum.title, search) > 0.1,
+                func.similarity(Curriculum.description, search) > 0.1
+            )
+        ).order_by(
+            func.greatest(
+                func.similarity(Curriculum.title, search),
+                func.similarity(Curriculum.description, search)
+            ).desc()
+        )
+
     total = query.count()
     items = query.offset(skip).limit(limit).all()
-    
+
     return {"items": items, "total": total, "skip": skip, "limit": limit}
 
 
