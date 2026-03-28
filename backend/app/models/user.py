@@ -37,4 +37,9 @@ class User(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
+
+    avatar_url: Mapped[str] = mapped_column(
+    String(500),
+    nullable=True
+    )
     curricula = relationship("Curriculum", back_populates="creator")
