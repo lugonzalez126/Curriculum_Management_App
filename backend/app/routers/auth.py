@@ -5,6 +5,9 @@ from app.schemas.user import UserRegister, UserResponse, UserLogin, TokenRespons
 from app.services.auth import register_user, login_user, refresh_access_token, logout_user
 from app.limiter import limiter
 from app.dependencies import get_db, get_current_user
+from app.models.user import User
+from app.services.user import update_user
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
