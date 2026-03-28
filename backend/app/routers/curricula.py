@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_optional_user
 from app.models.user import User
-from app.schemas.curriculum import CurriculumCreate, CurriculumUpdate, CurriculumResponse, CurriculumDetail
+from app.schemas.curriculum import CurriculumCreate, CurriculumUpdate, CurriculumResponse, CurriculumDetail, PaginatedCurriculumResponse
 from typing import Optional
-from fastapi import Request
 from app.limiter import limiter
 from app.services.curriculum import (
     create_curriculum, get_curriculum, update_curriculum,
@@ -15,14 +14,15 @@ import uuid
 router = APIRouter(prefix="/curricula", tags=["curricula"])
 
 
-@router.get("", response_model=list[CurriculumResponse])
-@limiter.limit("5/minute")
+@router.get("", response_model=PaginatedCurriculumResponse)
+@limiter.limit("30/minute")
 def list_curricula(request: Request, search: Optional[str] = Query(default=None), skip: int = 0, limit: int = Query(default=20, le=100), db: Session = Depends(get_db)):
     return list_published_curricula(search=search, db=db, skip=skip, limit=limit)
 
+
 @router.get("/mine", response_model=list[CurriculumResponse])
-def my_curricu(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_my_curricula(current_user=current_user, db=db,)
+def my_curricula(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return get_my_curricula(current_user=current_user, db=db)
 
 
 @router.get("/{curriculum_id}", response_model=CurriculumDetail)
@@ -43,4 +43,3 @@ def update(curriculum_id: uuid.UUID, data: CurriculumUpdate, db: Session = Depen
 @router.delete("/{curriculum_id}")
 def delete(curriculum_id: uuid.UUID, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return delete_curriculum(db=db, curriculum_id=curriculum_id, current_user=current_user)
-
