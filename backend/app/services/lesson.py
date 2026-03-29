@@ -16,7 +16,7 @@ def create_lesson(db: Session, module_id: uuid.UUID, data: LessonCreate) -> Less
         module_id=module_id,
         title=data.title,
         order=order,
-        content=data.content
+        content=data.content if data.content is not None else {}
     )
     db.add(new_lesson)
     db.commit()
