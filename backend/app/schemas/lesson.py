@@ -1,7 +1,7 @@
 from typing import Optional
 import uuid
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class LessonCreate(BaseModel):
@@ -26,6 +26,12 @@ class LessonResponse(BaseModel):
     updated_at: datetime
     model_config = {"from_attributes": True}
 
+    @field_validator('content', mode='before')
+    @classmethod
+    def content_not_none(cls, v):
+        return v if v is not None else {}
+
+
 class LessonSummary(BaseModel):
     id: uuid.UUID
     module_id: uuid.UUID
@@ -33,4 +39,3 @@ class LessonSummary(BaseModel):
     is_published: bool
     order: float
     model_config = {"from_attributes": True}
-
