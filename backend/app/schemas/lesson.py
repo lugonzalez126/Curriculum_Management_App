@@ -18,7 +18,7 @@ class LessonUpdate(BaseModel):
 class LessonResponse(BaseModel):
     id: uuid.UUID
     module_id: uuid.UUID
-    content: dict
+    content: dict = {}
     title: str
     is_published: bool
     order: float
