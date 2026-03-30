@@ -55,6 +55,6 @@ def logout(request: Request, db: Session = Depends(get_db)):
 def update_me(data: UserUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return update_user(db=db, current_user=current_user, data=data)
 
-@router.get("/auth/me", response_model=UserResponse)
+@router.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
