@@ -27,7 +27,7 @@ def login(request: Request, data: UserLogin, response: Response, db: Session = D
         value=result["refresh_token"],
         httponly=True,
         secure=True,
-        samesite="lax",
+        samesite="none",
         max_age=60 * 60 * 24 * 7
     )
     
