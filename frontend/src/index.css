@@ -1,0 +1,252 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+@theme {
+  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+
+  --color-stone-900: #1C1917;
+  --color-stone-700: #44403C;
+  --color-stone-500: #78716C;
+  --color-stone-400: #A8A29E;
+  --color-stone-300: #D6D3D1;
+  --color-stone-200: #E7E5E4;
+  --color-stone-100: #F5F5F4;
+  --color-stone-50:  #FAFAF9;
+
+  --color-blue-600: #2563EB;
+  --color-blue-500: #3B82F6;
+  --color-blue-100: #DBEAFE;
+  --color-blue-50:  #EFF6FF;
+
+  --color-green-bg:    #D1FAE5;
+  --color-green-text:  #065F46;
+  --color-yellow-bg:   #FEF3C7;
+  --color-yellow-text: #92400E;
+  --color-purple-bg:   #EDE9FE;
+  --color-purple-text: #5B21B6;
+  --color-danger-bg:   #FEE2E2;
+  --color-danger-text: #DC2626;
+  --color-toggle-on:   #10B981;
+}
+
+body {
+  font-family: var(--font-jakarta);
+  background-color: var(--color-stone-100);
+  color: var(--color-stone-700);
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out both;
+}
+
+/* TipTap Editor Prose Styles */
+.prose-editor {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #44403C;
+}
+
+.prose-editor h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1C1917;
+  margin: 1.5em 0 0.5em;
+}
+
+.prose-editor h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1C1917;
+  margin: 1.25em 0 0.5em;
+}
+
+.prose-editor h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1C1917;
+  margin: 1em 0 0.4em;
+}
+
+.prose-editor p {
+  margin: 0.75em 0;
+}
+
+.prose-editor ul,
+.prose-editor ol {
+  padding-left: 1.5em;
+  margin: 0.75em 0;
+}
+
+.prose-editor li {
+  margin: 0.25em 0;
+}
+
+.prose-editor blockquote {
+  border-left: 3px solid #D6D3D1;
+  padding-left: 1em;
+  color: #78716C;
+  margin: 1em 0;
+  font-style: italic;
+}
+
+.prose-editor code {
+  background: #F0EFED;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.prose-editor pre {
+  background: #1C1917;
+  color: #E7E5E4;
+  padding: 16px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.prose-editor pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.prose-editor a {
+  color: #2563EB;
+  text-decoration: underline;
+}
+
+.prose-editor img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 1em 0;
+}
+
+.prose-editor ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose-editor ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.prose-editor ul[data-type="taskList"] li input[type="checkbox"] {
+  margin-top: 4px;
+  accent-color: #2563EB;
+}
+
+.prose-editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #D6D3D1;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.15s ease-out both;
+}
+
+/* Table Styles */
+.prose-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.prose-editor th,
+.prose-editor td {
+  border: 1px solid #E7E5E4;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.prose-editor th {
+  background: #F5F5F4;
+  font-weight: 600;
+  color: #1C1917;
+}
+
+.prose-editor td {
+  color: #44403C;
+}
+
+.prose-editor tr:hover td {
+  background: #FAFAF9;
+}
+
+/* Highlight */
+.prose-editor mark {
+  background: #FEF08A;
+  padding: 1px 3px;
+  border-radius: 2px;
+}
+
+/* YouTube Embeds */
+.prose-editor iframe {
+  border-radius: 10px;
+  margin: 1em 0;
+  max-width: 100%;
+}
+
+/* Horizontal Rule */
+.prose-editor hr {
+  border: none;
+  border-top: 1px solid #E7E5E4;
+  margin: 1.5em 0;
+}
+/* Page transition */
+.page-enter {
+  animation: page-enter 0.25s ease-out both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card stagger */
+.card-stagger {
+  animation: fade-in-up 0.4s ease-out both;
+}
+
+/* Pulse shimmer override for skeleton */
+@keyframes shimmer {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
