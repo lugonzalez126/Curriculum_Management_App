@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 
-// Generate a consistent gradient from a string (title)
 function gradientFromString(str) {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
@@ -12,11 +11,10 @@ function gradientFromString(str) {
 }
 
 export default function CurriculumCard({ curriculum, showCreator = true }) {
-  const { id, title, description, cover_image_url, creator_username } = curriculum
+  const { id, title, description, cover_image_url, creator_username, creator_avatar_url } = curriculum
 
   return (
     <div className="group">
-      {/* Cover */}
       <Link to={`/curricula/${id}`}>
         <div
           className="rounded-[14px] overflow-hidden transition-all duration-250 ease-out group-hover:-translate-y-1"
@@ -26,28 +24,28 @@ export default function CurriculumCard({ curriculum, showCreator = true }) {
           }}
         >
           {cover_image_url ? (
-            <img
-              src={cover_image_url}
-              alt={title}
-              className="w-full h-full object-cover"
-            />
+            <img src={cover_image_url} alt={title} className="w-full h-full object-cover" />
           ) : (
-            <div
-              className="w-full h-full"
-              style={{ background: gradientFromString(title) }}
-            />
+            <div className="w-full h-full" style={{ background: gradientFromString(title) }} />
           )}
         </div>
       </Link>
 
-      {/* Metadata */}
       <div className="mt-3 flex items-start gap-2.5">
         {showCreator && (
           <Link
             to={`/creators/${creator_username}`}
-            className="shrink-0 w-[26px] h-[26px] rounded-full bg-blue-100 flex items-center justify-center text-[10px] font-semibold text-blue-600 mt-0.5 hover:ring-2 hover:ring-blue-200 transition-all"
+            className="shrink-0 w-[26px] h-[26px] rounded-full overflow-hidden flex items-center justify-center text-[10px] font-semibold mt-0.5 hover:ring-2 hover:ring-blue-200 transition-all"
+            style={{
+              backgroundColor: creator_avatar_url ? 'transparent' : '#DBEAFE',
+              color: creator_avatar_url ? 'transparent' : '#2563EB',
+            }}
           >
-            {creator_username?.charAt(0).toUpperCase()}
+            {creator_avatar_url ? (
+              <img src={creator_avatar_url} alt={creator_username} className="w-full h-full object-cover" />
+            ) : (
+              creator_username?.charAt(0).toUpperCase()
+            )}
           </Link>
         )}
         <div className="min-w-0">

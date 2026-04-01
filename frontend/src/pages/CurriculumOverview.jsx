@@ -108,8 +108,12 @@ export default function CurriculumOverview() {
           to={`/creators/${curriculum.creator_username}`}
           className="flex items-center gap-2.5 mb-6 group"
         >
-          <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-sm font-semibold text-blue-600 group-hover:ring-2 group-hover:ring-blue-200 transition-all">
-            {curriculum.creator_username?.charAt(0).toUpperCase()}
+          <div className="w-9 h-9 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center text-sm font-semibold text-blue-600 group-hover:ring-2 group-hover:ring-blue-200 transition-all">
+            {curriculum.creator_avatar_url ? (
+              <img src={curriculum.creator_avatar_url} alt={curriculum.creator_username} className="w-full h-full object-cover" />
+            ) : (
+              curriculum.creator_username?.charAt(0).toUpperCase()
+            )}
           </div>
           <span className="text-sm text-stone-500 group-hover:text-stone-700 transition-colors">
             {curriculum.creator_username}
