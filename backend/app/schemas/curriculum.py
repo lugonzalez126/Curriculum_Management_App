@@ -41,6 +41,7 @@ class CurriculumDetail(BaseModel):
     title: str
     description: str
     cover_image_url: Optional[str] = None
+    creator_avatar_url: Optional[str] = None
     is_published: bool
     created_at: datetime
     updated_at: datetime
