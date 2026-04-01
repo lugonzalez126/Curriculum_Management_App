@@ -72,12 +72,16 @@ export default function Dashboard() {
     <div className="max-w-[960px] mx-auto px-12 py-12">
       {/* Profile Card */}
       <div className="flex items-center gap-4 mb-12">
-        <button
-          onClick={() => setEditingAvatar(!editingAvatar)}
-          className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-lg font-semibold text-blue-600 shrink-0 cursor-pointer hover:ring-2 hover:ring-blue-200 transition-all"
-        >
-          U
-        </button>
+      <button
+        onClick={() => setEditingAvatar(!editingAvatar)}
+        className="w-14 h-14 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center text-lg font-semibold text-blue-600 shrink-0 cursor-pointer hover:ring-2 hover:ring-blue-200 transition-all"
+      >
+        {user?.avatar_url ? (
+          <img src={user.avatar_url} alt={user.username} className="w-full h-full object-cover" />
+        ) : (
+          user?.username?.charAt(0).toUpperCase() || 'U'
+        )}
+      </button>
         <div>
           <h1 className="text-lg font-semibold text-stone-900">My Dashboard</h1>
           <p className="text-sm text-stone-400">Manage your curricula</p>
