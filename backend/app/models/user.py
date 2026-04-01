@@ -5,6 +5,8 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 from sqlalchemy.orm import relationship
+from typing import Optional
+=
 
 class User(Base):
     __tablename__ = "users"
@@ -37,9 +39,8 @@ class User(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
-
-    avatar_url: Mapped[str] = mapped_column(
+    avatar_url: Mapped[Optional[str]] = mapped_column(
     String(500),
     nullable=True
-    )
+)
     curricula = relationship("Curriculum", back_populates="creator")

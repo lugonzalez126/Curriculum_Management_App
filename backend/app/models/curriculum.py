@@ -5,6 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 from sqlalchemy import DateTime, ForeignKey, Text, Boolean, String
 from sqlalchemy.orm import relationship
+from typing import Optional
 
 
 
@@ -44,10 +45,18 @@ class Curriculum(Base):
         default=lambda: datetime.now(timezone.utc),
         onupdate=lambda: datetime.now(timezone.utc)
     )
-    cover_image_url: Mapped[str] = mapped_column(
+    cover_image_url: Mapped[Optional[str]] = mapped_column(
     String(500),
     nullable=True
     )
+    
+    @property
+    def creator_username(self):
+    return self.creator.username if self.creator else ""
+
+    @property
+    def creator_avatar_url(self):
+        return self.creator.avatar_url if self.creator else None
     
     creator = relationship("User", back_populates="curricula")
     modules = relationship("Module", back_populates="curriculum", cascade="all, delete-orphan", order_by="Module.order")

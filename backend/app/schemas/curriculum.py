@@ -26,17 +26,12 @@ class CurriculumResponse(BaseModel):
     title: str
     description: str
     cover_image_url: Optional[str] = None
+    creator_avatar_url: Optional[str] = None
     is_published: bool
     created_at: datetime
     updated_at: datetime
     model_config = {"from_attributes": True}
 
-    @model_validator(mode="before")
-    @classmethod
-    def extract_creator_username(cls, data: Any) -> Any:
-        if hasattr(data, "creator") and data.creator:
-            data.__dict__["creator_username"] = data.creator.username
-        return data
 
 
 class CurriculumDetail(BaseModel):
@@ -52,12 +47,7 @@ class CurriculumDetail(BaseModel):
     modules: list[ModuleWithLessons] = []
     model_config = {"from_attributes": True}
 
-    @model_validator(mode="before")
-    @classmethod
-    def extract_creator_username(cls, data: Any) -> Any:
-        if hasattr(data, "creator") and data.creator:
-            data.__dict__["creator_username"] = data.creator.username
-        return data
+
 
 class CreatorPublicPage(BaseModel):
     creator_username: str
