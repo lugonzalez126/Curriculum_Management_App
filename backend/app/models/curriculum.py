@@ -49,14 +49,16 @@ class Curriculum(Base):
     String(500),
     nullable=True
     )
-    
+
+    creator = relationship("User", back_populates="curricula")
+    modules = relationship("Module", back_populates="curriculum", cascade="all, delete-orphan", order_by="Module.order")
+
     @property
     def creator_username(self):
-    return self.creator.username if self.creator else ""
+        return self.creator.username if self.creator else ""
 
     @property
     def creator_avatar_url(self):
         return self.creator.avatar_url if self.creator else None
     
-    creator = relationship("User", back_populates="curricula")
-    modules = relationship("Module", back_populates="curriculum", cascade="all, delete-orphan", order_by="Module.order")
+    
