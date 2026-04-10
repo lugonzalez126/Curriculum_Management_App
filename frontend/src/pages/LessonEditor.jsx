@@ -1,28 +1,45 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Underline from '@tiptap/extension-underline'
-import Link from '@tiptap/extension-link'
-import Image from '@tiptap/extension-image'
-import TextAlign from '@tiptap/extension-text-align'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import Placeholder from '@tiptap/extension-placeholder'
-import Highlight from '@tiptap/extension-highlight'
-import Subscript from '@tiptap/extension-subscript'
-import Superscript from '@tiptap/extension-superscript'
-import Youtube from '@tiptap/extension-youtube'
-import { Table } from '@tiptap/extension-table'
-import { TableRow } from '@tiptap/extension-table-row'
-import { TableCell } from '@tiptap/extension-table-cell'
-import { TableHeader } from '@tiptap/extension-table-header'
-import { Color } from '@tiptap/extension-color'
-import { TextStyle } from '@tiptap/extension-text-style'
+import { EditorContent, EditorContext, useEditor } from '@tiptap/react'
+import { StarterKit } from '@tiptap/starter-kit'
+import { Image } from '@tiptap/extension-image'
+import { TaskItem, TaskList } from '@tiptap/extension-list'
+import { TextAlign } from '@tiptap/extension-text-align'
+import { Typography } from '@tiptap/extension-typography'
+import { Highlight } from '@tiptap/extension-highlight'
+import { Subscript } from '@tiptap/extension-subscript'
+import { Superscript } from '@tiptap/extension-superscript'
+import { Selection } from '@tiptap/extensions'
+import { HorizontalRule } from '@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension'
+
+// Node styles
+import '@/components/tiptap-node/blockquote-node/blockquote-node.scss'
+import '@/components/tiptap-node/code-block-node/code-block-node.scss'
+import '@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss'
+import '@/components/tiptap-node/list-node/list-node.scss'
+import '@/components/tiptap-node/image-node/image-node.scss'
+import '@/components/tiptap-node/heading-node/heading-node.scss'
+import '@/components/tiptap-node/paragraph-node/paragraph-node.scss'
+
+// UI Primitives
+import { Spacer } from '@/components/tiptap-ui-primitive/spacer'
+import { Toolbar, ToolbarGroup, ToolbarSeparator } from '@/components/tiptap-ui-primitive/toolbar'
+
+// Tiptap UI
+import { HeadingDropdownMenu } from '@/components/tiptap-ui/heading-dropdown-menu'
+import { ListDropdownMenu } from '@/components/tiptap-ui/list-dropdown-menu'
+import { BlockquoteButton } from '@/components/tiptap-ui/blockquote-button'
+import { CodeBlockButton } from '@/components/tiptap-ui/code-block-button'
+import { ColorHighlightPopover } from '@/components/tiptap-ui/color-highlight-popover'
+import { LinkPopover } from '@/components/tiptap-ui/link-popover'
+import { MarkButton } from '@/components/tiptap-ui/mark-button'
+import { TextAlignButton } from '@/components/tiptap-ui/text-align-button'
+import { UndoRedoButton } from '@/components/tiptap-ui/undo-redo-button'
+
+// Editor styles
+import '@/components/tiptap-templates/simple/simple-editor.scss'
+
 import api from '../api/axios'
-import EditorToolbar from '../components/EditorToolbar'
-import Typography from '@tiptap/extension-typography'
-import CharacterCount from '@tiptap/extension-character-count'
 
 export default function LessonEditor() {
   const { lessonId } = useParams()
@@ -31,39 +48,37 @@ export default function LessonEditor() {
   const [title, setTitle] = useState('')
   const [loading, setLoading] = useState(true)
   const [saveStatus, setSaveStatus] = useState('idle')
-  const [htmlMode, setHtmlMode] = useState(false)
-  const [htmlSource, setHtmlSource] = useState('')
+  const toolbarRef = useRef(null)
 
   const editor = useEditor({
+    immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        autocomplete: 'off',
+        autocorrect: 'off',
+        autocapitalize: 'off',
+        class: 'simple-editor',
+      },
+    },
     extensions: [
       StarterKit.configure({
-        heading: { levels: [1, 2, 3] },
+        horizontalRule: false,
+        link: {
+          openOnClick: false,
+          enableClickSelection: true,
+        },
       }),
-      Underline,
-      Link.configure({ openOnClick: false }),
-      Image,
+      HorizontalRule,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       TaskList,
       TaskItem.configure({ nested: true }),
-      Placeholder.configure({ placeholder: 'Start writing your lesson content here...' }),
-      Highlight.configure({ multicolor: false }),
-      Subscript,
-      Superscript,
-      Youtube.configure({ width: 640, height: 360 }),
-      Table.configure({ resizable: true }),
-      TableRow,
-      TableCell,
-      TableHeader,
-      TextStyle,
-      Color,
+      Highlight.configure({ multicolor: true }),
+      Image,
       Typography,
-      CharacterCount
+      Superscript,
+      Subscript,
+      Selection,
     ],
-    editorProps: {
-      attributes: {
-        class: 'prose-editor outline-none min-h-[500px]',
-      },
-    },
     onUpdate: () => {
       setSaveStatus('idle')
     },
@@ -87,23 +102,8 @@ export default function LessonEditor() {
     if (editor) fetchLesson()
   }, [lessonId, editor])
 
-  function toggleHtmlMode() {
-    if (!editor) return
-    if (!htmlMode) {
-      setHtmlSource(editor.getHTML())
-      setHtmlMode(true)
-    } else {
-      editor.commands.setContent(htmlSource)
-      setHtmlMode(false)
-    }
-  }
-
   const saveContent = useCallback(async () => {
     if (!editor) return
-    if (htmlMode) {
-      editor.commands.setContent(htmlSource)
-      setHtmlMode(false)
-    }
     setSaveStatus('saving')
     try {
       const content = editor.getJSON()
@@ -114,7 +114,7 @@ export default function LessonEditor() {
       console.error('Failed to save', err)
       setSaveStatus('idle')
     }
-  }, [editor, lessonId, htmlMode, htmlSource])
+  }, [editor, lessonId])
 
   async function saveTitle() {
     if (title !== lesson?.title) {
@@ -153,57 +153,62 @@ export default function LessonEditor() {
         className="w-full text-[32px] font-bold text-stone-900 bg-transparent outline-none placeholder:text-stone-300 mb-8"
       />
 
-      {editor && (
-        <EditorToolbar
-          editor={editor}
-          onSave={saveContent}
-          onToggleHtml={toggleHtmlMode}
-          isHtmlMode={htmlMode}
-        />
-      )}
+      <div className="simple-editor-wrapper">
+        <EditorContext.Provider value={{ editor }}>
+          <Toolbar ref={toolbarRef}>
+            <Spacer />
+            <ToolbarGroup>
+              <UndoRedoButton action="undo" />
+              <UndoRedoButton action="redo" />
+            </ToolbarGroup>
+            <ToolbarSeparator />
+            <ToolbarGroup>
+              <HeadingDropdownMenu modal={false} levels={[1, 2, 3, 4]} />
+              <ListDropdownMenu modal={false} types={['bulletList', 'orderedList', 'taskList']} />
+              <BlockquoteButton />
+              <CodeBlockButton />
+            </ToolbarGroup>
+            <ToolbarSeparator />
+            <ToolbarGroup>
+              <MarkButton type="bold" />
+              <MarkButton type="italic" />
+              <MarkButton type="strike" />
+              <MarkButton type="code" />
+              <MarkButton type="underline" />
+              <ColorHighlightPopover />
+              <LinkPopover />
+            </ToolbarGroup>
+            <ToolbarSeparator />
+            <ToolbarGroup>
+              <MarkButton type="superscript" />
+              <MarkButton type="subscript" />
+            </ToolbarGroup>
+            <ToolbarSeparator />
+            <ToolbarGroup>
+              <TextAlignButton align="left" />
+              <TextAlignButton align="center" />
+              <TextAlignButton align="right" />
+              <TextAlignButton align="justify" />
+            </ToolbarGroup>
+            <Spacer />
+          </Toolbar>
 
-      <div
-        className="bg-white rounded-xl mt-4"
-        style={{ border: '0.5px solid #E7E5E4' }}
-      >
-        {htmlMode ? (
-          <textarea
-            value={htmlSource}
-            onChange={(e) => setHtmlSource(e.target.value)}
-            className="w-full min-h-[500px] px-10 py-8 font-mono text-sm text-stone-700 bg-stone-50 rounded-xl outline-none resize-y"
-            spellCheck={false}
-          />
-        ) : (
-          <div className="px-10 py-8">
-            <EditorContent editor={editor} />
-          </div>
-        )}
+          <EditorContent editor={editor} className="simple-editor-content" />
+        </EditorContext.Provider>
       </div>
 
       <div className="flex items-center justify-between mt-6">
-        <div className="flex items-center gap-4">
-            <p className="text-sm text-stone-400">
-            {saveStatus === 'saving' && 'Saving...'}
-            {saveStatus === 'saved' && '✓ All changes saved'}
-            {htmlMode && saveStatus === 'idle' && (
-                <span className="text-purple-text bg-purple-bg px-2 py-0.5 rounded text-xs font-medium">
-                HTML Mode — editing raw source
-                </span>
-            )}
-            </p>
-            {editor && !htmlMode && (
-            <p className="text-xs text-stone-300">
-                {editor.storage.characterCount.words()} words · {editor.storage.characterCount.characters()} chars
-            </p>
-            )}
-        </div>
+        <p className="text-sm text-stone-400">
+          {saveStatus === 'saving' && 'Saving...'}
+          {saveStatus === 'saved' && '✓ All changes saved'}
+        </p>
         <button
-            onClick={saveContent}
-            className="text-sm font-medium text-stone-50 bg-stone-900 px-6 py-2.5 rounded-lg hover:bg-stone-700 active:scale-[0.98] transition-all cursor-pointer"
+          onClick={saveContent}
+          className="text-sm font-medium text-stone-50 bg-stone-900 px-6 py-2.5 rounded-lg hover:bg-stone-700 active:scale-[0.98] transition-all cursor-pointer"
         >
-            Save
+          Save
         </button>
-        </div>
+      </div>
     </div>
   )
 }

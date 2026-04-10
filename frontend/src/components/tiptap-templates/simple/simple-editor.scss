@@ -1,0 +1,162 @@
+.simple-editor-wrapper {
+  width: 100%;
+  overflow: auto;
+  border: 0.5px solid #E7E5E4;
+  border-radius: 12px;
+  background: white;
+}
+
+.simple-editor-content {
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  flex: 1;
+  padding: 2rem 2.5rem;
+  min-height: 500px;
+  outline: none;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #44403C;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor p {
+  margin: 0.75em 0;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1C1917;
+  margin: 1.5em 0 0.5em;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1C1917;
+  margin: 1.25em 0 0.5em;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1C1917;
+  margin: 1em 0 0.4em;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1C1917;
+  margin: 1em 0 0.4em;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin: 0.75em 0;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin: 0.75em 0;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor li {
+  margin: 0.25em 0;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor blockquote {
+  border-left: 3px solid #D6D3D1;
+  padding-left: 1em;
+  color: #78716C;
+  margin: 1em 0;
+  font-style: italic;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor code {
+  background: #F0EFED;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor pre {
+  background: #1C1917;
+  color: #E7E5E4;
+  padding: 16px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor a {
+  color: #2563EB;
+  text-decoration: underline;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 1em 0;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor hr {
+  border: none;
+  border-top: 1px solid #E7E5E4;
+  margin: 1.5em 0;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor mark {
+  background: #FEF08A;
+  padding: 1px 3px;
+  border-radius: 2px;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor th,
+.simple-editor-content .tiptap.ProseMirror.simple-editor td {
+  border: 1px solid #E7E5E4;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor th {
+  background: #F5F5F4;
+  font-weight: 600;
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor .is-editor-empty:first-child::before {
+  content: 'Start writing your lesson content...';
+  color: #D6D3D1;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 480px) {
+  .simple-editor-content .tiptap.ProseMirror.simple-editor {
+    padding: 1rem 1.5rem;
+  }
+}
