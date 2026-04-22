@@ -94,8 +94,9 @@ def list_published_curricula(db: Session, search: Optional[str] = None, skip: in
                 func.similarity(Curriculum.description, search)
             ).desc()
         )
-
-    total = query.count()
+        
+    count_query = query.order_by(None)
+    total = count_query.count()
     items = query.offset(skip).limit(limit).all()
 
     return {"items": items, "total": total, "skip": skip, "limit": limit}

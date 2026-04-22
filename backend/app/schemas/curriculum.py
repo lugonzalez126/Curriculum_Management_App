@@ -37,7 +37,7 @@ class CurriculumResponse(BaseModel):
 class CurriculumDetail(BaseModel):
     id: uuid.UUID
     creator_id: uuid.UUID
-    creator_username: str = ""
+    creator_username: str
     title: str
     description: str
     cover_image_url: Optional[str] = None
