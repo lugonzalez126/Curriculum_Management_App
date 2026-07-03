@@ -10,11 +10,15 @@ from fastapi.responses import JSONResponse
 
 app = FastAPI(title="ArkHive API")
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173",
+    allow_origins=[
+    "http://localhost:5173",
     "https://curriculummanagementapp-production.up.railway.app",
-    ],
+    "https://ed-shelf.com",
+    "https://www.ed-shelf.com",
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
